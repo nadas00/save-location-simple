@@ -1,10 +1,15 @@
+import 'package:floor/floor.dart';
+
+@entity
 class Location {
+  @PrimaryKey(autoGenerate: true)
   int id;
+
   String name;
   String description;
   double latitude;
   double longitude;
-  DateTime lastVisit;
+  String lastVisit;
   String categoryColour;
 
   Location(
@@ -15,4 +20,9 @@ class Location {
       this.longitude,
       this.lastVisit,
       this.categoryColour});
+
+  @override
+  String toString() {
+    return 'Location{latitude: $latitude, longitude: $longitude, name: $name}';
+  }
 }
