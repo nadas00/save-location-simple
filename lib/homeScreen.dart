@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
 
@@ -32,6 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  getPosition() async {
+    Position position =
+        await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    String pLat = position.latitude.toString();
+    String pLong = position.longitude.toString();
+    _lat = pLat;
+    _long = pLong;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,37 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
               key: formKey,
               child: Column(
                 children: <Widget>[
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hoverColor: Colors.blueAccent,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blueAccent)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                      labelText: 'Enter input (lat)',
-                      fillColor: Colors.blueAccent,
-                      contentPadding: EdgeInsets.all(8.0),
-                      hintText: 'Lat',
-                    ),
-                    onSaved: (input) => _lat = input,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hoverColor: Colors.blueAccent,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blueAccent)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                      labelText: 'Enter input (long)',
-                      fillColor: Colors.blueAccent,
-                      contentPadding: EdgeInsets.all(8.0),
-                      hintText: 'Long',
-                    ),
-                    onSaved: (input) => _long = input,
-                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -118,12 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
+                getPosition();
                 formKey.currentState.save();
                 String lat = _lat;
                 String long = _long;
                 String name = _name;
                 print(listLocation);
-
                 var newLocation =
                     Location(latitude: lat, longitude: long, name: name);
                 locationDao.insertLocation(newLocation);
