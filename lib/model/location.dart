@@ -7,8 +7,8 @@ class Location {
 
   String name;
   String description;
-  double latitude;
-  double longitude;
+  String latitude;
+  String longitude;
   String lastVisit;
   String categoryColour;
 

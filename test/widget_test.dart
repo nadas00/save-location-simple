@@ -7,12 +7,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(SaveLocationSimple());
+    LocationDao locationDao;
+    await tester.pumpWidget(SaveLocationSimple(locationDao));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
