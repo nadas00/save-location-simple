@@ -1,5 +1,7 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location_permissions/location_permissions.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
 
@@ -72,10 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderSide: BorderSide(color: Colors.blueAccent)),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                      labelText: 'Enter input (name)',
+                      labelText: 'Konum İsmi',
                       fillColor: Colors.blueAccent,
                       contentPadding: EdgeInsets.all(8.0),
-                      hintText: 'Name',
+                      hintText: 'Konum ismi giriniz',
                     ),
                     onSaved: (input) => _name = input,
                   ),
@@ -93,20 +95,80 @@ class _HomeScreenState extends State<HomeScreen> {
             child: RaisedButton(
               color: Colors.blueAccent,
               child: Text(
-                'Save',
+                'Kaydet',
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: () {
-                getPosition();
-                formKey.currentState.save();
-                String lat = _lat;
-                String long = _long;
-                String name = _name;
-                print(listLocation);
-                var newLocation =
-                    Location(latitude: lat, longitude: long, name: name);
-                locationDao.insertLocation(newLocation);
-                formKey.currentState.reset();
+              onPressed: () async {
+                ServiceStatus serviceStatus =
+                    await LocationPermissions().checkServiceStatus();
+                PermissionStatus permissionStatus =
+                    await LocationPermissions().checkPermissionStatus();
+
+                if (serviceStatus != ServiceStatus.disabled) {
+                  if (permissionStatus != PermissionStatus.denied) {
+                    await getPosition();
+                    formKey.currentState.save();
+                    String lat = _lat ?? 'Konum belirlenemedi';
+                    String long = _long ?? 'Konum belirlenemedi';
+                    if (_name.isEmpty) {
+                      _name = 'Tanımsız Konum';
+                    }
+                    String name = _name;
+
+                    var newLocation =
+                        Location(latitude: lat, longitude: long, name: name);
+                    locationDao.insertLocation(newLocation);
+                    formKey.currentState.reset();
+                  } else {
+                    var locationPermissionDisabledError = AlertDialog(
+                      title: Text('Uygulama izinlerini düzenlemen gerekiyor!'),
+                      content: Text(
+                          'Bu özelliği kullanabilmek için konum izni gereklidir.'),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text('Kapat'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        FlatButton(
+                          child: Text('Ayarlar'),
+                          onPressed: () {
+                            AppSettings.openLocationSettings();
+                          },
+                        ),
+                      ],
+                    );
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            locationPermissionDisabledError);
+                  }
+                } else {
+                  var locationServiceDisabledError = AlertDialog(
+                    title: Text('Konum ayarlarını düzenlemen gerekiyor!'),
+                    content: Text(
+                        'Bu özelliği kullanabilmek için konum servislerini açmanız gerekir.'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('Kapat'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      FlatButton(
+                        child: Text('Ayarlar'),
+                        onPressed: () {
+                          AppSettings.openLocationSettings();
+                        },
+                      ),
+                    ],
+                  );
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          locationServiceDisabledError);
+                }
               },
             ),
           ),
