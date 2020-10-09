@@ -11,6 +11,7 @@ class Location {
   String longitude;
   String lastVisit;
   String categoryColour;
+  String photo;
 
   Location(
       {this.id,
@@ -19,7 +20,8 @@ class Location {
       this.latitude,
       this.longitude,
       this.lastVisit,
-      this.categoryColour});
+      this.categoryColour,
+      this.photo});
 
   @override
   String toString() {

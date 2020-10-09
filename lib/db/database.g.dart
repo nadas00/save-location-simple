@@ -81,7 +81,7 @@ class _$LocationDatabase extends LocationDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Location` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `description` TEXT, `latitude` TEXT, `longitude` TEXT, `lastVisit` TEXT, `categoryColour` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `Location` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `description` TEXT, `latitude` TEXT, `longitude` TEXT, `lastVisit` TEXT, `categoryColour` TEXT, `photo` TEXT)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -107,7 +107,8 @@ class _$LocationDao extends LocationDao {
                   'latitude': item.latitude,
                   'longitude': item.longitude,
                   'lastVisit': item.lastVisit,
-                  'categoryColour': item.categoryColour
+                  'categoryColour': item.categoryColour,
+                  'photo': item.photo
                 },
             changeListener),
         _locationUpdateAdapter = UpdateAdapter(
@@ -121,7 +122,8 @@ class _$LocationDao extends LocationDao {
                   'latitude': item.latitude,
                   'longitude': item.longitude,
                   'lastVisit': item.lastVisit,
-                  'categoryColour': item.categoryColour
+                  'categoryColour': item.categoryColour,
+                  'photo': item.photo
                 },
             changeListener),
         _locationDeletionAdapter = DeletionAdapter(
@@ -135,7 +137,8 @@ class _$LocationDao extends LocationDao {
                   'latitude': item.latitude,
                   'longitude': item.longitude,
                   'lastVisit': item.lastVisit,
-                  'categoryColour': item.categoryColour
+                  'categoryColour': item.categoryColour,
+                  'photo': item.photo
                 },
             changeListener);
 
@@ -152,7 +155,8 @@ class _$LocationDao extends LocationDao {
       latitude: row['latitude'] as String,
       longitude: row['longitude'] as String,
       lastVisit: row['lastVisit'] as String,
-      categoryColour: row['categoryColour'] as String);
+      categoryColour: row['categoryColour'] as String,
+      photo: row['photo'] as String);
 
   final InsertionAdapter<Location> _locationInsertionAdapter;
 

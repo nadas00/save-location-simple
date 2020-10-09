@@ -6,6 +6,7 @@ import 'package:location_permissions/location_permissions.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
 import 'dart:io';
+import 'dart:convert';
 
 import 'model/location.dart';
 
@@ -105,6 +106,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Widget _leadingImage(List<Location> locations, int index){
+    if(locations[index].photo != null){
+      return FractionallySizedBox(widthFactor: 0.2, heightFactor: 0.9, child: Image(image: MemoryImage(base64Decode(locations[index].photo))));
+    }else
+      return FractionallySizedBox(widthFactor: 0.2, heightFactor: 0.9, child: Icon(Icons.map_outlined));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -114,37 +122,36 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Save Location Simple'),
       ),
       body: Column(
         children: <Widget>[
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hoverColor: Colors.blueAccent,
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blueAccent)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6.0))),
+                      labelText: 'Konum İsmi',
+                      fillColor: Colors.blueAccent,
+                      contentPadding: EdgeInsets.all(8.0),
+                      hintText: 'Konum ismi giriniz',
                     ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hoverColor: Colors.blueAccent,
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blueAccent)),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                        labelText: 'Konum İsmi',
-                        fillColor: Colors.blueAccent,
-                        contentPadding: EdgeInsets.all(8.0),
-                        hintText: 'Konum ismi giriniz',
-                      ),
-                      onSaved: (input) => _name = input,
-                    ),
-                  ],
-                ),
+                    onSaved: (input) => _name = input,
+                  ),
+                ],
               ),
             ),
           ),
@@ -196,10 +203,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                           String name = _name;
 
-                          var newLocation =
-                              Location(latitude: lat, longitude: long, name: name);
-                          locationDao.insertLocation(newLocation);
-                          formKey.currentState.reset();
+                          if(imageFile != null){
+                            final bytes = await File(imageFile.path).readAsBytes();
+                            String base64Photo = base64.encode(bytes);
+                            var newLocation =
+                            Location(latitude: lat, longitude: long, name: name, photo: base64Photo);
+                            locationDao.insertLocation(newLocation);
+                            formKey.currentState.reset();
+                          }else{
+                            var newLocation =
+                            Location(latitude: lat, longitude: long, name: name);
+                            locationDao.insertLocation(newLocation);
+                            formKey.currentState.reset();
+                          }
                         } else {
                           var locationPermissionDisabledError = AlertDialog(
                             title: Text('Uygulama izinlerini düzenlemen gerekiyor!'),
@@ -252,6 +268,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             builder: (BuildContext context) =>
                                 locationServiceDisabledError);
                       }
+                      setState(() {
+                        imageFile = null;
+                      });
+
                     },
                   ),
                 ],
@@ -270,6 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: locations.length,
                   itemBuilder: (_, index) {
                     return ListTile(
+                      leading: _leadingImage(locations,index),
                       title: Text(locations[index].name),
                       subtitle: Text(locations[index].latitude +
                           ' ' +
@@ -277,7 +298,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       onLongPress: () {
                         int id = locations[index].id;
                         var selectedLocation = Location(id: id);
-                        print(locations[index].name);
                         locationDao.deleteLocation(selectedLocation);
                       },
                     );
