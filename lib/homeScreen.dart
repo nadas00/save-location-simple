@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'dart:convert';
 
@@ -91,6 +92,14 @@ class _HomeScreenState extends State<HomeScreen> {
       imageFile = File(picture.path);
     });
     Navigator.of(context).pop();
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _imagePlaceholder(){
@@ -299,6 +308,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         int id = locations[index].id;
                         var selectedLocation = Location(id: id);
                         locationDao.deleteLocation(selectedLocation);
+                      },
+                      onTap: (){
+                        var url ='https://www.google.com/maps/dir/?api=1&destination=${locations[index].latitude},${locations[index].longitude}&travelmode=walking&dir_action=navigate';
+                        _launchURL(url);
                       },
                     );
                   },
