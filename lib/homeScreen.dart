@@ -51,19 +51,27 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _showChoiceDialog(BuildContext context){
     return showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
-        title: Text('Seçim'),
+        title: Text('Seçim', textAlign: TextAlign.center,),
         content: SingleChildScrollView(
           child: ListBody(
             children: [
               GestureDetector(
-                child: Text('Galeriye Git'),
+                child: RaisedButton.icon(
+                  disabledColor: Colors.blue,
+                  label: Text('Galeriye Git'),
+                  icon: Icon(Icons.add_photo_alternate_outlined),
+                ),
                 onTap: (){
                   _openGallery(context);
                 },
               ),
               Padding(padding: EdgeInsets.all(8.0)),
               GestureDetector(
-                child: Text('Fotoğraf Çek'),
+                child: RaisedButton.icon(
+                  disabledColor: Colors.blue,
+                  label: Text('Fotoğraf Çek'),
+                  icon: Icon(Icons.camera_alt_outlined),
+                ),
                 onTap: (){
                   _openCamera(context);
                 },
@@ -80,17 +88,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _openGallery(BuildContext context) async{
     var picture = await picker.getImage(source: ImageSource.gallery);
-    this.setState(() {
-      imageFile = File(picture.path);
-    });
+    if(picture!=null){
+      this.setState(() {
+        imageFile = File(picture.path);
+      });
+    }
     Navigator.of(context).pop();
   }
 
   _openCamera(BuildContext context) async{
     var picture = await picker.getImage(source: ImageSource.camera);
-    this.setState(() {
-      imageFile = File(picture.path);
-    });
+    if(picture!=null){
+      this.setState(() {
+        imageFile = File(picture.path);
+      });
+    }
     Navigator.of(context).pop();
   }
 
