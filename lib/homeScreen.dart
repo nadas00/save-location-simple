@@ -31,6 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   LocationDao locationDao;
   _HomeScreenState(this.locationDao);
 
+  var encodedPhoto;
+
   builder() async {
     locationDatabase =
         await $FloorLocationDatabase.databaseBuilder('location.db').build();
@@ -89,8 +91,11 @@ class _HomeScreenState extends State<HomeScreen> {
   _openGallery(BuildContext context) async{
     var picture = await picker.getImage(source: ImageSource.gallery);
     if(picture!=null){
+      imageFile = File(picture.path);
+      final bytes = await File(imageFile.path).readAsBytes();
+      String base64Photo = base64.encode(bytes);
       this.setState(() {
-        imageFile = File(picture.path);
+        encodedPhoto = base64Photo;
       });
     }
     Navigator.of(context).pop();
@@ -99,8 +104,11 @@ class _HomeScreenState extends State<HomeScreen> {
   _openCamera(BuildContext context) async{
     var picture = await picker.getImage(source: ImageSource.camera);
     if(picture!=null){
+      imageFile = File(picture.path);
+      final bytes = await File(imageFile.path).readAsBytes();
+      String base64Photo = base64.encode(bytes);
       this.setState(() {
-        imageFile = File(picture.path);
+        encodedPhoto = base64Photo;
       });
     }
     Navigator.of(context).pop();
@@ -129,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _leadingImage(List<Location> locations, int index){
     if(locations[index].photo != null){
-      return FractionallySizedBox(widthFactor: 0.2, heightFactor: 0.9, child: Image(image: MemoryImage(base64Decode(locations[index].photo))));
+      return FractionallySizedBox(widthFactor: 0.2, heightFactor: 0.9, child: Image.memory(base64Decode(locations[index].photo), ));
     }else
       return FractionallySizedBox(widthFactor: 0.2, heightFactor: 0.9, child: Icon(Icons.map_outlined));
   }
@@ -225,10 +233,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           String name = _name;
 
                           if(imageFile != null){
-                            final bytes = await File(imageFile.path).readAsBytes();
-                            String base64Photo = base64.encode(bytes);
                             var newLocation =
-                            Location(latitude: lat, longitude: long, name: name, photo: base64Photo);
+                            Location(latitude: lat, longitude: long, name: name, photo: encodedPhoto);
                             locationDao.insertLocation(newLocation);
                             formKey.currentState.reset();
                           }else{
@@ -306,7 +312,6 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (_, snapshot) {
                 if (!snapshot.hasData) return Container();
                 final locations = snapshot.data;
-                print(snapshot.data);
                 return ListView.builder(
                   itemCount: locations.length,
                   itemBuilder: (_, index) {
