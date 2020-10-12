@@ -352,13 +352,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
-  location_permissions:
-    dependency: "direct main"
-    description:
-      name: location_permissions
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0+1"
   logging:
     dependency: transitive
     description:
@@ -422,6 +415,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.2"
+  permission_handler:
+    dependency: "direct main"
+    description:
+      name: permission_handler
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.1+1"
+  permission_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: permission_handler_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   petitparser:
     dependency: transitive
     description:

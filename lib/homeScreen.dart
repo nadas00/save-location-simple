@@ -2,7 +2,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:location_permissions/location_permissions.dart';
+import 'package:permission_handler/permission_handler.dart' as pH;
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -89,16 +89,44 @@ class _HomeScreenState extends State<HomeScreen> {
   final picker = ImagePicker();
 
   _openGallery(BuildContext context) async{
-    var picture = await picker.getImage(source: ImageSource.gallery);
-    if(picture!=null){
-      imageFile = File(picture.path);
-      final bytes = await File(imageFile.path).readAsBytes();
-      String base64Photo = base64.encode(bytes);
-      this.setState(() {
-        encodedPhoto = base64Photo;
-      });
+    if(await pH.Permission.accessMediaLocation.isGranted){
+      var picture = await picker.getImage(source: ImageSource.gallery);
+      if(picture!=null){
+        imageFile = File(picture.path);
+        final bytes = await File(imageFile.path).readAsBytes();
+        String base64Photo = base64.encode(bytes);
+        this.setState(() {
+          encodedPhoto = base64Photo;
+        });
+      }
+      Navigator.of(context).pop();
     }
-    Navigator.of(context).pop();
+    else{
+      var mediaLocationPermissionDisabledError = AlertDialog(
+        title: Text('Uygulamaya medya izni vermeniz gerekiyor!'),
+        content: Text(
+            'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir..'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Kapat'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text('Ayarlar'),
+            onPressed: () {
+              AppSettings.openAppSettings();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+      showDialog(
+          context: context,
+          builder: (BuildContext context) =>
+          mediaLocationPermissionDisabledError);
+    }
   }
 
   _openCamera(BuildContext context) async{
@@ -216,59 +244,54 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
-                      ServiceStatus serviceStatus =
-                          await LocationPermissions().checkServiceStatus();
-                      PermissionStatus permissionStatus =
-                          await LocationPermissions().checkPermissionStatus();
-
-                      if (serviceStatus != ServiceStatus.disabled) {
-                        if (permissionStatus != PermissionStatus.denied) {
-                          await getPosition();
-                          formKey.currentState.save();
-                          String lat = _lat ?? 'Konum belirlenemedi';
-                          String long = _long ?? 'Konum belirlenemedi';
-                          if (_name.isEmpty) {
-                            _name = 'Tanımsız Konum';
-                          }
-                          String name = _name;
-
-                          if(imageFile != null){
-                            var newLocation =
-                            Location(latitude: lat, longitude: long, name: name, photo: encodedPhoto);
-                            locationDao.insertLocation(newLocation);
-                            formKey.currentState.reset();
-                          }else{
-                            var newLocation =
-                            Location(latitude: lat, longitude: long, name: name);
-                            locationDao.insertLocation(newLocation);
-                            formKey.currentState.reset();
-                          }
-                        } else {
-                          var locationPermissionDisabledError = AlertDialog(
-                            title: Text('Uygulama izinlerini düzenlemen gerekiyor!'),
-                            content: Text(
-                                'Bu özelliği kullanabilmek için konum izni gereklidir.'),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('Kapat'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              FlatButton(
-                                child: Text('Ayarlar'),
-                                onPressed: () {
-                                  AppSettings.openLocationSettings();
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  locationPermissionDisabledError);
+                      if (await pH.Permission.locationWhenInUse.serviceStatus.isEnabled) {
+                          if (await pH.Permission.location.request().isGranted) {
+                        await getPosition();
+                        formKey.currentState.save();
+                        String lat = _lat ?? 'Konum belirlenemedi';
+                        String long = _long ?? 'Konum belirlenemedi';
+                        if (_name.isEmpty) {
+                          _name = 'Tanımsız Konum';
                         }
+                        String name = _name;
+
+                        if(imageFile != null){
+                          var newLocation =
+                          Location(latitude: lat, longitude: long, name: name, photo: encodedPhoto);
+                          locationDao.insertLocation(newLocation);
+                          formKey.currentState.reset();
+                        }else{
+                          var newLocation =
+                          Location(latitude: lat, longitude: long, name: name);
+                          locationDao.insertLocation(newLocation);
+                          formKey.currentState.reset();
+                        }}
+                          else{
+                            var locationPermissionDisabledError = AlertDialog(
+                              title: Text('Uygulamaya konum izni vermeniz gerekiyor!'),
+                              content: Text(
+                                  'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir..'),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text('Kapat'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                FlatButton(
+                                  child: Text('Ayarlar'),
+                                  onPressed: () {
+                                    AppSettings.openAppSettings();
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                locationPermissionDisabledError);
+                          }
                       } else {
                         var locationServiceDisabledError = AlertDialog(
                           title: Text('Konum ayarlarını düzenlemen gerekiyor!'),
