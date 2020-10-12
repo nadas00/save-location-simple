@@ -9,11 +9,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'dart:convert';
 
+import 'components/reusable_alert_dialog.dart';
 import 'model/location.dart';
 
 class HomeScreen extends StatefulWidget {
   final LocationDao locationDao;
+
   HomeScreen(this.locationDao);
+
   @override
   _HomeScreenState createState() => _HomeScreenState(locationDao);
 }
@@ -29,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   LocationDatabase locationDatabase;
   LocationDao locationDao;
+
   _HomeScreenState(this.locationDao);
 
   var encodedPhoto;
@@ -50,48 +54,113 @@ class _HomeScreenState extends State<HomeScreen> {
     _long = pLong;
   }
 
-  Future<void> _showChoiceDialog(BuildContext context){
-    return showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(
-        title: Text('Seçim', textAlign: TextAlign.center,),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: [
-              GestureDetector(
-                child: RaisedButton.icon(
-                  disabledColor: Colors.blue,
-                  label: Text('Galeriye Git'),
-                  icon: Icon(Icons.add_photo_alternate_outlined),
-                ),
-                onTap: (){
-                  _openGallery(context);
-                },
+  savingOperations() async {
+    if (await pH.Permission.locationWhenInUse.serviceStatus.isEnabled) {
+      if (await pH.Permission.location.request().isGranted) {
+        await getPosition();
+        formKey.currentState.save();
+        String lat = _lat ?? 'Konum belirlenemedi';
+        String long = _long ?? 'Konum belirlenemedi';
+        if (_name.isEmpty) {
+          _name = 'Tanımsız Konum';
+        }
+        String name = _name;
+
+        if (imageFile != null) {
+          var newLocation = Location(
+              latitude: lat, longitude: long, name: name, photo: encodedPhoto);
+          locationDao.insertLocation(newLocation);
+          formKey.currentState.reset();
+        } else {
+          var newLocation =
+              Location(latitude: lat, longitude: long, name: name);
+          locationDao.insertLocation(newLocation);
+          formKey.currentState.reset();
+        }
+      } else {
+        final titleText = 'Uygulamaya konum izni vermeniz gerekiyor!';
+        final bodyText =
+            'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir.';
+        askLocationPermission() {
+          AppSettings.openAppSettings();
+          Navigator.of(context).pop();
+        }
+
+        var locationPermissionDisabledError = MyCustomAlert(
+          onPressApply: askLocationPermission,
+          titleText: titleText,
+          bodyText: bodyText,
+        );
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => locationPermissionDisabledError);
+      }
+    } else {
+      final titleText = 'Konum ayarlarını düzenlemen gerekiyor!';
+      final bodyText =
+          'Bu özelliği kullanabilmek için konum servislerini açmanız gerekir.';
+      askLocationService() {
+        AppSettings.openLocationSettings();
+        Navigator.of(context).pop();
+      }
+
+      var locationServiceDisabledError = MyCustomAlert(
+          titleText: titleText,
+          bodyText: bodyText,
+          onPressApply: askLocationService);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => locationServiceDisabledError);
+    }
+  }
+
+  Future<void> _showChoiceDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Seçim',
+              textAlign: TextAlign.center,
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  GestureDetector(
+                    child: RaisedButton.icon(
+                      disabledColor: Colors.blue,
+                      label: Text('Galeriye Git'),
+                      icon: Icon(Icons.add_photo_alternate_outlined),
+                    ),
+                    onTap: () {
+                      _openGallery(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: RaisedButton.icon(
+                      disabledColor: Colors.blue,
+                      label: Text('Fotoğraf Çek'),
+                      icon: Icon(Icons.camera_alt_outlined),
+                    ),
+                    onTap: () {
+                      _openCamera(context);
+                    },
+                  ),
+                ],
               ),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: RaisedButton.icon(
-                  disabledColor: Colors.blue,
-                  label: Text('Fotoğraf Çek'),
-                  icon: Icon(Icons.camera_alt_outlined),
-                ),
-                onTap: (){
-                  _openCamera(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      );
-    });
+            ),
+          );
+        });
   }
 
   File imageFile;
   final picker = ImagePicker();
 
-  _openGallery(BuildContext context) async{
-    if(await pH.Permission.accessMediaLocation.isGranted){
+  _openGallery(BuildContext context) async {
+    if (await pH.Permission.accessMediaLocation.isGranted) {
       var picture = await picker.getImage(source: ImageSource.gallery);
-      if(picture!=null){
+      if (picture != null) {
         imageFile = File(picture.path);
         final bytes = await File(imageFile.path).readAsBytes();
         String base64Photo = base64.encode(bytes);
@@ -100,38 +169,29 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
       Navigator.of(context).pop();
-    }
-    else{
-      var mediaLocationPermissionDisabledError = AlertDialog(
-        title: Text('Uygulamaya medya izni vermeniz gerekiyor!'),
-        content: Text(
-            'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir..'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Kapat'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: Text('Ayarlar'),
-            onPressed: () {
-              AppSettings.openAppSettings();
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
+    } else {
+      final titleText = 'Uygulamaya medya izni vermeniz gerekiyor!';
+      final bodyText =
+          'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir.';
+      askMediaLocationPermission() {
+        AppSettings.openAppSettings();
+        Navigator.of(context).pop();
+      }
+
+      var mediaLocationPermissionDisabledError = MyCustomAlert(
+          titleText: titleText,
+          bodyText: bodyText,
+          onPressApply: askMediaLocationPermission());
       showDialog(
           context: context,
           builder: (BuildContext context) =>
-          mediaLocationPermissionDisabledError);
+              mediaLocationPermissionDisabledError);
     }
   }
 
-  _openCamera(BuildContext context) async{
+  _openCamera(BuildContext context) async {
     var picture = await picker.getImage(source: ImageSource.camera);
-    if(picture!=null){
+    if (picture != null) {
       imageFile = File(picture.path);
       final bytes = await File(imageFile.path).readAsBytes();
       String base64Photo = base64.encode(bytes);
@@ -150,24 +210,35 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget _imagePlaceholder(){
-    if(imageFile == null){
+  Widget _imagePlaceholder() {
+    if (imageFile == null) {
       return Text('Resim Seçilmedi');
-    }else{
+    } else {
       return Column(
         children: [
-          Image.file(imageFile,width:MediaQuery.of(context).size.width/2, height:MediaQuery.of(context).size.height/5),
-          Text('Fotoğrafı silmek için çift dokun', style: TextStyle(color: Colors.blueGrey),)
+          Image.file(imageFile,
+              width: MediaQuery.of(context).size.width / 2,
+              height: MediaQuery.of(context).size.height / 5),
+          Text(
+            'Fotoğrafı silmek için çift dokun',
+            style: TextStyle(color: Colors.blueGrey),
+          )
         ],
       );
     }
   }
 
-  Widget _leadingImage(List<Location> locations, int index){
-    if(locations[index].photo != null){
-      return FractionallySizedBox(widthFactor: 0.2, heightFactor: 0.9, child: Image.memory(base64Decode(locations[index].photo), ));
-    }else
-      return FractionallySizedBox(widthFactor: 0.2, heightFactor: 0.9, child: Icon(Icons.map_outlined));
+  Widget _leadingImage(List<Location> locations, int index) {
+    if (locations[index].photo != null) {
+      return FractionallySizedBox(
+          widthFactor: 0.2,
+          heightFactor: 0.9,
+          child: Image.memory(
+            base64Decode(locations[index].photo),
+          ));
+    } else
+      return FractionallySizedBox(
+          widthFactor: 0.2, heightFactor: 0.9, child: Icon(Icons.map_outlined));
   }
 
   @override
@@ -220,23 +291,24 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 imageFile = null;
               });
-
             },
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal:8.0),
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _imagePlaceholder(),
                   RaisedButton(
-                    child: Text('Resim Seç',
-                      style: TextStyle(color: Colors.white)),
+                      child: Text('Resim Seç',
+                          style: TextStyle(color: Colors.white)),
                       color: Colors.blue,
-                      onPressed: (){
-                      _showChoiceDialog(context);
-                  }),
-                  SizedBox(height: 10.0,),
+                      onPressed: () {
+                        _showChoiceDialog(context);
+                      }),
+                  SizedBox(
+                    height: 10.0,
+                  ),
                   RaisedButton(
                     color: Colors.blueAccent,
                     child: Text(
@@ -244,84 +316,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
-                      if (await pH.Permission.locationWhenInUse.serviceStatus.isEnabled) {
-                          if (await pH.Permission.location.request().isGranted) {
-                        await getPosition();
-                        formKey.currentState.save();
-                        String lat = _lat ?? 'Konum belirlenemedi';
-                        String long = _long ?? 'Konum belirlenemedi';
-                        if (_name.isEmpty) {
-                          _name = 'Tanımsız Konum';
-                        }
-                        String name = _name;
-
-                        if(imageFile != null){
-                          var newLocation =
-                          Location(latitude: lat, longitude: long, name: name, photo: encodedPhoto);
-                          locationDao.insertLocation(newLocation);
-                          formKey.currentState.reset();
-                        }else{
-                          var newLocation =
-                          Location(latitude: lat, longitude: long, name: name);
-                          locationDao.insertLocation(newLocation);
-                          formKey.currentState.reset();
-                        }}
-                          else{
-                            var locationPermissionDisabledError = AlertDialog(
-                              title: Text('Uygulamaya konum izni vermeniz gerekiyor!'),
-                              content: Text(
-                                  'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir..'),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text('Kapat'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                FlatButton(
-                                  child: Text('Ayarlar'),
-                                  onPressed: () {
-                                    AppSettings.openAppSettings();
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                locationPermissionDisabledError);
-                          }
-                      } else {
-                        var locationServiceDisabledError = AlertDialog(
-                          title: Text('Konum ayarlarını düzenlemen gerekiyor!'),
-                          content: Text(
-                              'Bu özelliği kullanabilmek için konum servislerini açmanız gerekir.'),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: Text('Kapat'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            FlatButton(
-                              child: Text('Ayarlar'),
-                              onPressed: () {
-                                AppSettings.openLocationSettings();
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                locationServiceDisabledError);
-                      }
+                      savingOperations();
                       setState(() {
                         imageFile = null;
                       });
-
                     },
                   ),
                 ],
@@ -339,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: locations.length,
                   itemBuilder: (_, index) {
                     return ListTile(
-                      leading: _leadingImage(locations,index),
+                      leading: _leadingImage(locations, index),
                       title: Text(locations[index].name),
                       subtitle: Text(locations[index].latitude +
                           ' ' +
@@ -349,8 +347,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         var selectedLocation = Location(id: id);
                         locationDao.deleteLocation(selectedLocation);
                       },
-                      onTap: (){
-                        var url ='https://www.google.com/maps/dir/?api=1&destination=${locations[index].latitude},${locations[index].longitude}&travelmode=walking&dir_action=navigate';
+                      onTap: () {
+                        var url =
+                            'https://www.google.com/maps/dir/?api=1&destination=${locations[index].latitude},${locations[index].longitude}&travelmode=walking&dir_action=navigate';
                         _launchURL(url);
                       },
                     );
