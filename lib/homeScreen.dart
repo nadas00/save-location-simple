@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
       var mediaLocationPermissionDisabledError = MyCustomAlert(
           titleText: titleText,
           bodyText: bodyText,
-          onPressApply: askMediaLocationPermission());
+          onPressApply: askMediaLocationPermission);
       showDialog(
           context: context,
           builder: (BuildContext context) =>
