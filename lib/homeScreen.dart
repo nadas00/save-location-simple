@@ -171,7 +171,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final picker = ImagePicker();
 
   _openGallery(BuildContext context) async {
-    if (await pH.Permission.photos.request().isGranted) {
+    pH.Permission _permission;
+
+    if (Platform.isIOS) {
+      _permission = pH.Permission.photos;
+    } else if (Platform.isAndroid) {
+      _permission = pH.Permission.accessMediaLocation;
+    }
+    if (await _permission.request().isGranted) {
       await getPhotoFromSource(ImageSource.gallery);
     } else {
       final titleText = 'Uygulamaya medya izni vermeniz gerekiyor!';
@@ -204,6 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
         AppSettings.openAppSettings();
         Navigator.of(context).pop();
       }
+
       var mediaLocationPermissionDisabledError = MyCustomAlert(
           titleText: titleText,
           bodyText: bodyText,
