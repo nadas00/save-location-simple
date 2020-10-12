@@ -54,6 +54,19 @@ class _HomeScreenState extends State<HomeScreen> {
     _long = pLong;
   }
 
+  getPhotoFromSource(ImageSource imageSource) async {
+    var picture = await picker.getImage(source: imageSource);
+    if (picture != null) {
+      imageFile = File(picture.path);
+      final bytes = await File(imageFile.path).readAsBytes();
+      String base64Photo = base64.encode(bytes);
+      this.setState(() {
+        encodedPhoto = base64Photo;
+      });
+    }
+    Navigator.of(context).pop();
+  }
+
   savingOperations() async {
     if (await pH.Permission.locationWhenInUse.serviceStatus.isEnabled) {
       if (await pH.Permission.location.request().isGranted) {
@@ -158,17 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final picker = ImagePicker();
 
   _openGallery(BuildContext context) async {
-    if (await pH.Permission.accessMediaLocation.isGranted) {
-      var picture = await picker.getImage(source: ImageSource.gallery);
-      if (picture != null) {
-        imageFile = File(picture.path);
-        final bytes = await File(imageFile.path).readAsBytes();
-        String base64Photo = base64.encode(bytes);
-        this.setState(() {
-          encodedPhoto = base64Photo;
-        });
-      }
-      Navigator.of(context).pop();
+    if (await pH.Permission.photos.request().isGranted) {
+      await getPhotoFromSource(ImageSource.gallery);
     } else {
       final titleText = 'Uygulamaya medya izni vermeniz gerekiyor!';
       final bodyText =
@@ -190,16 +194,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _openCamera(BuildContext context) async {
-    var picture = await picker.getImage(source: ImageSource.camera);
-    if (picture != null) {
-      imageFile = File(picture.path);
-      final bytes = await File(imageFile.path).readAsBytes();
-      String base64Photo = base64.encode(bytes);
-      this.setState(() {
-        encodedPhoto = base64Photo;
-      });
+    if (await pH.Permission.camera.request().isGranted) {
+      getPhotoFromSource(ImageSource.camera);
+    } else {
+      final titleText = 'Uygulamaya medya izni vermeniz gerekiyor!';
+      final bodyText =
+          'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir.';
+      askMediaLocationPermission() {
+        AppSettings.openAppSettings();
+        Navigator.of(context).pop();
+      }
+      var mediaLocationPermissionDisabledError = MyCustomAlert(
+          titleText: titleText,
+          bodyText: bodyText,
+          onPressApply: askMediaLocationPermission);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) =>
+              mediaLocationPermissionDisabledError);
     }
-    Navigator.of(context).pop();
   }
 
   _launchURL(String url) async {
@@ -316,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
-                      savingOperations();
+                      await savingOperations();
                       setState(() {
                         imageFile = null;
                       });

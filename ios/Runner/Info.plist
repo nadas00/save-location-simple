@@ -34,6 +34,12 @@
     <string>Kameraya erişim izni gerekiyor.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Geleriye erişim izni gerekiyor.</string>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>NSLocationWhenInUseUsageDescription erişim izni gerekiyor.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>NSLocationAlwaysAndWhenInUseUsageDescription erişim izni gerekiyor.</string>
+
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
