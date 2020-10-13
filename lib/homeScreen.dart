@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart' as pH;
+import 'package:save_location/app_localizations.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -229,6 +230,10 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  translate(String text){
+    return Localizations.of<AppLocalizations>(context, AppLocalizations).getTranslation(text) ?? '<translate error>';
   }
 
   Widget _imagePlaceholder() {
