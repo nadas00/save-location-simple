@@ -73,10 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
       if (await pH.Permission.location.request().isGranted) {
         await getPosition();
         formKey.currentState.save();
-        String lat = _lat ?? 'Konum belirlenemedi';
-        String long = _long ?? 'Konum belirlenemedi';
+        String lat = _lat ?? translate('location undefined');
+        String long = _long ?? translate('location undefined');
         if (_name.isEmpty) {
-          _name = 'Tanımsız Konum';
+          _name = translate('undefined location');
         }
         String name = _name;
 
@@ -92,9 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
           formKey.currentState.reset();
         }
       } else {
-        final titleText = 'Uygulamaya konum izni vermeniz gerekiyor!';
-        final bodyText =
-            'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir.';
+        final titleText = translate("location permission titleText");
+        final bodyText = translate("location permission bodyText");
         askLocationPermission() {
           AppSettings.openAppSettings();
           Navigator.of(context).pop();
@@ -110,9 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (BuildContext context) => locationPermissionDisabledError);
       }
     } else {
-      final titleText = 'Konum ayarlarını düzenlemen gerekiyor!';
-      final bodyText =
-          'Bu özelliği kullanabilmek için konum servislerini açmanız gerekir.';
+      final titleText = translate('location service titleText');
+      final bodyText = translate('location service bodyText');
       askLocationService() {
         AppSettings.openLocationSettings();
         Navigator.of(context).pop();
@@ -134,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Seçim',
+              translate('selection'),
               textAlign: TextAlign.center,
             ),
             content: SingleChildScrollView(
@@ -143,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   GestureDetector(
                     child: RaisedButton.icon(
                       disabledColor: Colors.blue,
-                      label: Text('Galeriye Git'),
+                      label: Text(translate('from gallery')),
                       icon: Icon(Icons.add_photo_alternate_outlined),
                     ),
                     onTap: () {
@@ -154,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   GestureDetector(
                     child: RaisedButton.icon(
                       disabledColor: Colors.blue,
-                      label: Text('Fotoğraf Çek'),
+                      label: Text(translate('take a photo')),
                       icon: Icon(Icons.camera_alt_outlined),
                     ),
                     onTap: () {
@@ -182,9 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (await _permission.request().isGranted) {
       await getPhotoFromSource(ImageSource.gallery);
     } else {
-      final titleText = 'Uygulamaya medya izni vermeniz gerekiyor!';
-      final bodyText =
-          'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir.';
+      final titleText = translate('media permission titleText');
+      final bodyText = translate('media permission bodyText');
       askMediaLocationPermission() {
         AppSettings.openAppSettings();
         Navigator.of(context).pop();
@@ -205,9 +202,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (await pH.Permission.camera.request().isGranted) {
       getPhotoFromSource(ImageSource.camera);
     } else {
-      final titleText = 'Uygulamaya medya izni vermeniz gerekiyor!';
-      final bodyText =
-          'Bu özelliği kullanabilmek için uygulama bazında izin gereklidir.';
+      final titleText = translate('media permission titleText');
+      final bodyText = translate('media permission bodyText');
       askMediaLocationPermission() {
         AppSettings.openAppSettings();
         Navigator.of(context).pop();
@@ -233,12 +229,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   translate(String text){
-    return Localizations.of<AppLocalizations>(context, AppLocalizations).getTranslation(text) ?? '<translate error>';
+    return Localizations.of<AppLocalizations>(context, AppLocalizations).getTranslation(text) ?? '<translate error: $text>';
   }
 
   Widget _imagePlaceholder() {
     if (imageFile == null) {
-      return Text('Resim Seçilmedi');
+      return Text(translate('no image'));
     } else {
       return Column(
         children: [
@@ -246,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: MediaQuery.of(context).size.width / 2,
               height: MediaQuery.of(context).size.height / 5),
           Text(
-            'Fotoğrafı silmek için çift dokun',
+            translate('double tap to delete image'),
             style: TextStyle(color: Colors.blueGrey),
           )
         ],
@@ -278,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Save Location Simple'),
+        title: Text(translate('save location simple')),
       ),
       body: Column(
         children: <Widget>[
@@ -298,10 +294,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderSide: BorderSide(color: Colors.blueAccent)),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                      labelText: 'Konum İsmi',
+                      labelText: translate('location name'),
                       fillColor: Colors.blueAccent,
                       contentPadding: EdgeInsets.all(8.0),
-                      hintText: 'Konum ismi giriniz',
+                      hintText: translate('enter location name'),
                     ),
                     onSaved: (input) => _name = input,
                   ),
@@ -326,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   _imagePlaceholder(),
                   RaisedButton(
-                      child: Text('Resim Seç',
+                      child: Text(translate('add picture'),
                           style: TextStyle(color: Colors.white)),
                       color: Colors.blue,
                       onPressed: () {
@@ -338,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   RaisedButton(
                     color: Colors.blueAccent,
                     child: Text(
-                      'Kaydet',
+                      translate('save'),
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {

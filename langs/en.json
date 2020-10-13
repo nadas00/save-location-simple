@@ -1,2 +1,24 @@
 {
+  "save location simple" : "Save Location Simple",
+  "location name" : "Location Name",
+  "enter location name" : "Enter location name",
+  "no image" : "No Image",
+  "double tap to delete image" : "Double tap to delete image",
+  "add picture" : "Add Photo",
+  "selection": "Selection",
+  "from gallery": "From Gallery",
+  "take a photo": "Take a Photo",
+  "save": "Save",
+
+  "media permission titleText": "Media permission needed!",
+  "media permission bodyText": "You have to give media permission for this action.",
+  "location permission tittleText": "Location permission needed!",
+  "location permission bodyText": "You have to give location permission for this action.",
+  "location service titleText": "Location service needed!",
+  "location service bodyText": "You have to activate location service for this action.",
+  "close": "Close",
+  "settings": "Settings",
+
+  "location undefined": "location undefined",
+  "undefined location": "undefined location"
 }

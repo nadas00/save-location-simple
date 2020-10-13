@@ -1,2 +1,24 @@
 {
+  "save location simple" : "Kolay Konum Kaydet",
+  "location name" : "Konum İsmi",
+  "enter location name" : "Konum ismi giriniz",
+  "no image" : "Resim seçilmedi",
+  "double tap to delete image" : "Fotoğrafı silmek için çift tıklayınız",
+  "add picture" : "Fotoğraf Ekle",
+  "selection": "Seçim",
+  "from gallery": "Galeriye Git",
+  "take a photo": "Fotoğraf Çek",
+  "save": "Kaydet",
+
+  "media permission titleText": "Medya izni gerekiyor!",
+  "media permission bodyText": "Bu eylemi gerçekleştirmek için uygulamaya medya izni vermeniz gerekiyor.",
+  "location permission tittleText": "Konum izni gerekiyor!",
+  "location permission bodyText": "Bu eylemi gerçekleştirmek için uygulamaya konum izni vermeniz gerekiyor.",
+  "location service titleText": "Konum servisi gerekiyor!",
+  "location service bodyText": "Bu eylemi gerçekleştirmek için konum servisini aktif etmeniz gerekitor.",
+  "close": "Kapat",
+  "settings": "Ayarlar",
+
+  "location undefined": "location undefined",
+  "undefined location": "undefined location"
 }
