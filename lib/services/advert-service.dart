@@ -15,13 +15,13 @@ class AdvertService {
   showBanner(){
     BannerAd banner = BannerAd(
       adUnitId: BannerAd.testAdUnitId,
-      size: AdSize.smartBanner,
+      size: AdSize.banner,
       targetingInfo: _targetingInfo
     );
 
     banner
       ..load()
-      ..show(anchorType: AnchorType.bottom);
+      ..show();
 
     banner.dispose();
   }

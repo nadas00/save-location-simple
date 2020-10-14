@@ -1,5 +1,4 @@
 import 'package:app_settings/app_settings.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -387,7 +386,11 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-          Padding(padding: EdgeInsets.only(bottom: 90.0))
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Divider(color: Colors.blueAccent)),
+          Padding(padding: EdgeInsets.only(bottom: 55.0))
+
         ],
       ),
     );
