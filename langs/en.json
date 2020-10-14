@@ -12,7 +12,7 @@
 
   "media permission titleText": "Media permission needed!",
   "media permission bodyText": "You have to give media permission for this action.",
-  "location permission tittleText": "Location permission needed!",
+  "location permission titleText": "Location permission needed!",
   "location permission bodyText": "You have to give location permission for this action.",
   "location service titleText": "Location service needed!",
   "location service bodyText": "You have to activate location service for this action.",
