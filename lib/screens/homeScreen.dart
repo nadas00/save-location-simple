@@ -73,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   savingOperations() async {
     if (await pH.Permission.locationWhenInUse.serviceStatus.isEnabled) {
       if (await pH.Permission.location.request().isGranted) {
+        await _advertService.showIntersitial();
         await getPosition();
         formKey.currentState.save();
         String lat = _lat ?? translate('location undefined');
@@ -270,8 +271,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     builder();
-    _advertService.showIntersitial();
     _advertService.showBanner();
+    _advertService.loadRewardedAd();
+    _advertService.addRewardListener();
   }
 
   @override
@@ -280,6 +282,27 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(translate('save location simple')),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.video_collection_outlined,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              final titleText = translate('ad title');
+              final bodyText = translate('ad body');
+              final applyText = translate('ad button');
+              showRewardedAd(){
+                Navigator.of(context).pop();
+                _advertService.showReardedAd();
+              }
+              var rewardedAdAlert = MyCustomAlert(titleText: titleText, bodyText: bodyText, applyText: applyText, onPressApply: showRewardedAd);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) => rewardedAdAlert);
+            },
+          )
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -375,7 +398,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         locationDao.deleteLocation(selectedLocation);
                       },
                       onTap: () {
-                        _advertService.showIntersitial();
                         var url =
                             'https://www.google.com/maps/dir/?api=1&destination=${locations[index].latitude},${locations[index].longitude}&travelmode=walking&dir_action=navigate';
                         _launchURL(url);

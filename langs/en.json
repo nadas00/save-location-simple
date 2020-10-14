@@ -20,5 +20,9 @@
   "settings": "Settings",
 
   "location undefined": "location undefined",
-  "undefined location": "undefined location"
+  "undefined location": "undefined location",
+
+  "ad title": "Support us!",
+  "ad body": "Best way of supporting developers is clicking on ads!",
+  "ad button": "Go to ad!"
 }

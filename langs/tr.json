@@ -20,5 +20,9 @@
   "settings": "Ayarlar",
 
   "location undefined": "Tanımsız konum",
-  "undefined location": "tanımlanamayan konum"
+  "undefined location": "tanımlanamayan konum",
+
+  "ad title": "Destek ol!",
+  "ad body": "Geliştiricilere destek olmanın en kolay yolu reklamlara tıklamaktır.",
+  "ad button": "Reklama git!"
 }

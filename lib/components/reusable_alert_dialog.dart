@@ -6,17 +6,21 @@ class MyCustomAlert extends StatelessWidget {
   final titleText;
   final bodyText;
   final Function onPressApply;
+  final applyText;
 
   const MyCustomAlert(
       {@required this.titleText,
-        @required this.bodyText,
-        @required this.onPressApply});
+      @required this.bodyText,
+      @required this.onPressApply,
+      this.applyText});
 
   @override
   Widget build(BuildContext context) {
-
-    translate(String text){
-      return Localizations.of<AppLocalizationsService>(context, AppLocalizationsService).getTranslation(text) ?? '<translate error: $text>';
+    translate(String text) {
+      return Localizations.of<AppLocalizationsService>(
+                  context, AppLocalizationsService)
+              .getTranslation(text) ??
+          '<translate error: $text>';
     }
 
     return AlertDialog(
@@ -30,11 +34,10 @@ class MyCustomAlert extends StatelessWidget {
           },
         ),
         FlatButton(
-          child: Text(translate('settings')),
+          child: Text(applyText ?? translate('settings')),
           onPressed: onPressApply,
         ),
       ],
     );
   }
 }
-
