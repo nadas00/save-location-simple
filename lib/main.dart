@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:save_location/services/app_localizations-service.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
@@ -22,6 +23,10 @@ class SaveLocationSimple extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       supportedLocales: [Locale('en', ''), Locale('tr', '')],
       localizationsDelegates: [
