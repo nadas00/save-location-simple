@@ -19,6 +19,6 @@
   "close": "Kapat",
   "settings": "Ayarlar",
 
-  "location undefined": "location undefined",
-  "undefined location": "undefined location"
+  "location undefined": "Tanımsız konum",
+  "undefined location": "tanımlanamayan konum"
 }
