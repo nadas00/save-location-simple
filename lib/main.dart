@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:save_location/app_localizations.dart';
+import 'package:save_location/services/app_localizations-service.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'homeScreen.dart';
+import 'screens/homeScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ class SaveLocationSimple extends StatelessWidget {
     return MaterialApp(
       supportedLocales: [Locale('en', ''), Locale('tr', '')],
       localizationsDelegates: [
-        AppLocalizations.delegate,
+        AppLocalizationsService.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],

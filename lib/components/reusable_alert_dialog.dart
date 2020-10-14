@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_localizations.dart';
+import '../services/app_localizations-service.dart';
 
 class MyCustomAlert extends StatelessWidget {
   final titleText;
@@ -16,7 +16,7 @@ class MyCustomAlert extends StatelessWidget {
   Widget build(BuildContext context) {
 
     translate(String text){
-      return Localizations.of<AppLocalizations>(context, AppLocalizations).getTranslation(text) ?? '<translate error: $text>';
+      return Localizations.of<AppLocalizationsService>(context, AppLocalizationsService).getTranslation(text) ?? '<translate error: $text>';
     }
 
     return AlertDialog(

@@ -25,21 +25,17 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location when in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>NSLocationWhenInUseUsageDescription erişim izni gerekiyor.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSCameraUsageDescription</key>
-    <string>Kameraya erişim izni gerekiyor.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Geleriye erişim izni gerekiyor.</string>
-
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>NSLocationWhenInUseUsageDescription erişim izni gerekiyor.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>NSLocationAlwaysAndWhenInUseUsageDescription erişim izni gerekiyor.</string>
-
+	<string>Kameraya erişim izni gerekiyor.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Geleriye erişim izni gerekiyor.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>NSLocationAlwaysAndWhenInUseUsageDescription erişim izni gerekiyor.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -55,5 +51,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>GADApplicationIdentifier</key>
+	<string>$(ADDMOB_ID)</string>
+	<key>NSAppTransportSecurity</key>
+        <dict>
+            <!--Not a recommended way, there are better solutions available-->
+            <key>NSAllowsArbitraryLoads</key>
+            <true/>
+        </dict>
 </dict>
 </plist>

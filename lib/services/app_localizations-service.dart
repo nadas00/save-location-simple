@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AppLocalizations {
+class AppLocalizationsService {
   Locale locale;
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizationsService> delegate = _AppLocalizationsDelegate();
 
-  AppLocalizations(this.locale);
+  AppLocalizationsService(this.locale);
 
   Map<String, String> languageMap = Map();
   Future load() async {
@@ -23,7 +23,7 @@ class AppLocalizations {
   }
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations>{
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizationsService>{
   const _AppLocalizationsDelegate();
   @override
   bool isSupported(Locale locale) {
@@ -31,14 +31,14 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations>{
   }
 
   @override
-  Future<AppLocalizations> load(Locale locale) async {
-    AppLocalizations localizations = AppLocalizations(locale);
+  Future<AppLocalizationsService> load(Locale locale) async {
+    AppLocalizationsService localizations = AppLocalizationsService(locale);
     await localizations.load();
     return localizations;
   }
 
   @override
-  bool shouldReload(covariant LocalizationsDelegate<AppLocalizations> old) {
+  bool shouldReload(covariant LocalizationsDelegate<AppLocalizationsService> old) {
     return false;
   }
 

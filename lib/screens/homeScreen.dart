@@ -1,17 +1,19 @@
 import 'package:app_settings/app_settings.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart' as pH;
-import 'package:save_location/app_localizations.dart';
+import 'package:save_location/services/advert-service.dart';
+import 'package:save_location/services/app_localizations-service.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'dart:convert';
 
-import 'components/reusable_alert_dialog.dart';
-import 'model/location.dart';
+import '../components/reusable_alert_dialog.dart';
+import '../model/location.dart';
 
 class HomeScreen extends StatefulWidget {
   final LocationDao locationDao;
@@ -23,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final AdvertService _advertService = AdvertService();
   String _lat;
   String _long;
   String _name;
@@ -169,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
   File imageFile;
   final picker = ImagePicker();
 
+
   _openGallery(BuildContext context) async {
     pH.Permission _permission;
 
@@ -229,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   translate(String text){
-    return Localizations.of<AppLocalizations>(context, AppLocalizations).getTranslation(text) ?? '<translate error: $text>';
+    return Localizations.of<AppLocalizationsService>(context, AppLocalizationsService).getTranslation(text) ?? '<translate error: $text>';
   }
 
   Widget _imagePlaceholder() {
@@ -267,6 +271,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     builder();
+    _advertService.showIntersitial();
+    _advertService.showBanner();
   }
 
   @override
@@ -370,6 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         locationDao.deleteLocation(selectedLocation);
                       },
                       onTap: () {
+                        _advertService.showIntersitial();
                         var url =
                             'https://www.google.com/maps/dir/?api=1&destination=${locations[index].latitude},${locations[index].longitude}&travelmode=walking&dir_action=navigate';
                         _launchURL(url);
@@ -380,6 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
+          Padding(padding: EdgeInsets.only(bottom: 90.0))
         ],
       ),
     );
