@@ -8,10 +8,10 @@ class AdvertService {
   MobileAdTargetingInfo _targetingInfo;
   final String _bannerAd = Platform.isAndroid
       ? 'ca-app-pub-1965278103872493/6286344231'
-      : 'ca-app-pub-1965278103872493/8505313468';
+      : 'ca-app-pub-1965278103872493/2907487955';
   final String _intersitialAd = Platform.isAndroid
       ? 'ca-app-pub-1965278103872493/8821325460'
-      : 'ca-app-pub-1965278103872493/5168364375';
+      : 'ca-app-pub-1965278103872493/7189691358';
   final String _rewardedAd = Platform.isAndroid
       ? 'ca-app-pub-1965278103872493/9883943930'
       : 'ca-app-pub-1965278103872493/6752182438';
