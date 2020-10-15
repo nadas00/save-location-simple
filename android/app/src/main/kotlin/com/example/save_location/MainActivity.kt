@@ -1,4 +1,4 @@
-package com.example.save_location
+package com.save_location
 
 import io.flutter.embedding.android.FlutterActivity
 
