@@ -22,7 +22,7 @@ class AdvertService {
 
   showBanner() {
     BannerAd banner = BannerAd(
-        adUnitId: BannerAd.testAdUnitId,
+        adUnitId: _bannerAd,
         size: AdSize.banner,
         targetingInfo: _targetingInfo);
 
@@ -35,7 +35,7 @@ class AdvertService {
 
   showIntersitial() {
     InterstitialAd interstitialAd = InterstitialAd(
-        adUnitId: InterstitialAd.testAdUnitId, targetingInfo: _targetingInfo);
+        adUnitId: _intersitialAd, targetingInfo: _targetingInfo);
 
     interstitialAd
       ..load()
@@ -49,7 +49,7 @@ class AdvertService {
   void loadRewardedAd() {
     RewardedVideoAd.instance.load(
       targetingInfo: _targetingInfo,
-      adUnitId: RewardedVideoAd.testAdUnitId,
+      adUnitId: _rewardedAd,
     );
   }
 
