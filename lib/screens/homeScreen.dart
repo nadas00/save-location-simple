@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (Platform.isIOS) {
       _permission = pH.Permission.photos;
     } else if (Platform.isAndroid) {
-      _permission = pH.Permission.accessMediaLocation;
+      _permission = pH.Permission.storage;
     }
     if (await _permission.request().isGranted) {
       await getPhotoFromSource(ImageSource.gallery);
