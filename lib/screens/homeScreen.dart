@@ -172,7 +172,6 @@ class _HomeScreenState extends State<HomeScreen> {
   File imageFile;
   final picker = ImagePicker();
 
-
   _openGallery(BuildContext context) async {
     pH.Permission _permission;
 
@@ -182,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _permission = pH.Permission.storage;
     }
     if (await _permission.request().isGranted) {
-      await getPhotoFromSource(ImageSource.gallery);
+      getPhotoFromSource(ImageSource.gallery);
     } else {
       final titleText = translate('media permission titleText');
       final bodyText = translate('media permission bodyText');
@@ -232,8 +231,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  translate(String text){
-    return Localizations.of<AppLocalizationsService>(context, AppLocalizationsService).getTranslation(text) ?? '<translate error: $text>';
+  translate(String text) {
+    return Localizations.of<AppLocalizationsService>(
+                context, AppLocalizationsService)
+            .getTranslation(text) ??
+        '<translate error: $text>';
   }
 
   Widget _imagePlaceholder() {
@@ -292,11 +294,16 @@ class _HomeScreenState extends State<HomeScreen> {
               final titleText = translate('ad title');
               final bodyText = translate('ad body');
               final applyText = translate('ad button');
-              showRewardedAd(){
+              showRewardedAd() {
                 Navigator.of(context).pop();
                 _advertService.showReardedAd();
               }
-              var rewardedAdAlert = MyCustomAlert(titleText: titleText, bodyText: bodyText, applyText: applyText, onPressApply: showRewardedAd);
+
+              var rewardedAdAlert = MyCustomAlert(
+                  titleText: titleText,
+                  bodyText: bodyText,
+                  applyText: applyText,
+                  onPressApply: showRewardedAd);
               showDialog(
                   context: context,
                   builder: (BuildContext context) => rewardedAdAlert);
@@ -388,10 +395,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (_, index) {
                     return ListTile(
                       leading: _leadingImage(locations, index),
-                      title: Text(locations[index].name),
-                      subtitle: Text(locations[index].latitude +
-                          ' ' +
-                          locations[index].longitude),
+                      title: Text(
+                          locations[index].name ?? translate('name error')),
+                      subtitle: Text(
+                          '${locations[index].latitude} ${locations[index].latitude} ' ??
+                              translate('location error')),
                       onLongPress: () {
                         int id = locations[index].id;
                         var selectedLocation = Location(id: id);
@@ -412,7 +420,6 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: EdgeInsets.symmetric(horizontal: 10.0),
               child: Divider(color: Colors.blueAccent)),
           Padding(padding: EdgeInsets.only(bottom: 55.0))
-
         ],
       ),
     );

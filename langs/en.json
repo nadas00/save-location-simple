@@ -24,5 +24,8 @@
 
   "ad title": "Support us!",
   "ad body": "Best way of supporting developers is clicking on ads!",
-  "ad button": "Go to ad!"
+  "ad button": "Go to ad!",
+
+  "location error": "Location undefined (error)",
+  "name error": "Name undefined (error)"
 }

@@ -19,10 +19,13 @@
   "close": "Kapat",
   "settings": "Ayarlar",
 
-  "location undefined": "Tanımsız konum",
-  "undefined location": "tanımlanamayan konum",
+  "location undefined": "Tanımlanamayan konum",
+  "undefined location": "Tanımsız konum",
 
   "ad title": "Destek ol!",
   "ad body": "Geliştiricilere destek olmanın en kolay yolu reklamlara tıklamaktır.",
-  "ad button": "Reklama git!"
+  "ad button": "Reklama git!",
+
+  "location error": "Lokasyon ismi hatası",
+  "name error": "Konum hatası"
 }
