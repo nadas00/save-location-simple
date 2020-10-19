@@ -19,7 +19,7 @@ Save location simple uses a number of open source projects to work properly:
 ##### Packages 
 
 
-* [Sqflite] - A self-contained, high-reliability, embedded, SQL database engine.
+* [Sqflite] - Flutter is Google’s UI toolkit for building beautiful, natively compiled applications for mobile, web, and desktop from a single codebase.
 * [Floor] - The typesafe, reactive and lightweight SQLite abstraction.
 * [Geolocator] - Cross-platform (iOS, Android) API for generic location (GPS etc.) functions.
 * [Permission Handler] - A cross-platform (iOS, Android) API to request permissions and check their status. 
