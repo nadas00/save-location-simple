@@ -27,5 +27,7 @@
   "ad button": "Go to ad!",
 
   "location error": "Location undefined (error)",
-  "name error": "Name undefined (error)"
+  "name error": "Name undefined (error)",
+
+  "photo of saved location": "Photo of saved location"
 }

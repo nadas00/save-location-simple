@@ -27,5 +27,7 @@
   "ad button": "Reklama git!",
 
   "location error": "Lokasyon ismi hatası",
-  "name error": "Konum hatası"
+  "name error": "Konum hatası",
+
+  "photo of saved location": "Kaydedilen lokasyon fotoğrafı"
 }

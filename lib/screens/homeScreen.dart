@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart' as pH;
-import 'package:save_location/services/advert-service.dart';
 import 'package:save_location/services/app_localizations-service.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
@@ -24,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final AdvertService _advertService = AdvertService();
   String _lat;
   String _long;
   String _name;
@@ -73,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
   savingOperations() async {
     if (await pH.Permission.locationWhenInUse.serviceStatus.isEnabled) {
       if (await pH.Permission.location.request().isGranted) {
-        await _advertService.showIntersitial();
         await getPosition();
         formKey.currentState.save();
         String lat = _lat ?? translate('location undefined');
@@ -257,25 +254,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _leadingImage(List<Location> locations, int index) {
+
     if (locations[index].photo != null) {
-      return FractionallySizedBox(
-          widthFactor: 0.2,
-          heightFactor: 0.9,
-          child: Image.memory(
-            base64Decode(locations[index].photo),
-          ));
+      return Image.memory(
+        base64Decode(locations[index].photo),
+      );
     } else
       return FractionallySizedBox(
           widthFactor: 0.2, heightFactor: 0.9, child: Icon(Icons.map_outlined));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    builder();
-    _advertService.showBanner();
-    _advertService.loadRewardedAd();
-    _advertService.addRewardListener();
   }
 
   @override
@@ -284,32 +270,6 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(translate('save location simple')),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.video_collection_outlined,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              final titleText = translate('ad title');
-              final bodyText = translate('ad body');
-              final applyText = translate('ad button');
-              showRewardedAd() {
-                Navigator.of(context).pop();
-                _advertService.showReardedAd();
-              }
-
-              var rewardedAdAlert = MyCustomAlert(
-                  titleText: titleText,
-                  bodyText: bodyText,
-                  applyText: applyText,
-                  onPressApply: showRewardedAd);
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) => rewardedAdAlert);
-            },
-          )
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -394,32 +354,87 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: locations.length,
                   itemBuilder: (_, index) {
                     return ListTile(
-                      leading: _leadingImage(locations, index),
+                      leading: FractionallySizedBox(
+                          widthFactor: 0.2,
+                          heightFactor: 0.9,
+                          child: _leadingImage(locations, index)),
                       title: Text(
                           locations[index].name ?? translate('name error')),
                       subtitle: Text(
                           '${locations[index].latitude} ${locations[index].latitude} ' ??
                               translate('location error')),
-                      onLongPress: () {
-                        int id = locations[index].id;
-                        var selectedLocation = Location(id: id);
-                        locationDao.deleteLocation(selectedLocation);
-                      },
-                      onTap: () {
-                        var url =
-                            'https://www.google.com/maps/dir/?api=1&destination=${locations[index].latitude},${locations[index].longitude}&travelmode=walking&dir_action=navigate';
-                        _launchURL(url);
-                      },
+                      trailing: Container(
+                        height: 50,
+                        width: 150,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.image,
+                                color: Colors.blue,
+                              ),
+                              onPressed: () {
+                                showDialog<void>(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return WillPopScope(
+                                      onWillPop: () async => false,
+                                      child: AlertDialog(
+                                        backgroundColor: Colors.white,
+                                        title: Text(
+                                          translate("photo of saved location"),
+                                          style: TextStyle(color: Colors.blue),
+                                        ),
+                                        content: _leadingImage(locations, index),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            child: Text(
+                                              translate("close"),
+                                              style: TextStyle(
+                                                  color: Colors.blue),
+                                            ),
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.directions_walk,
+                                  color: Colors.green),
+                              onPressed: () {
+                                var url =
+                                    'https://www.google.com/maps/dir/?api=1&destination=${locations[index].latitude},${locations[index].longitude}&travelmode=walking&dir_action=navigate';
+                                _launchURL(url);
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                int id = locations[index].id;
+                                var selectedLocation = Location(id: id);
+                                locationDao.deleteLocation(selectedLocation);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      isThreeLine: true,
                     );
                   },
                 );
               },
             ),
           ),
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: Divider(color: Colors.blueAccent)),
-          Padding(padding: EdgeInsets.only(bottom: 55.0))
         ],
       ),
     );
