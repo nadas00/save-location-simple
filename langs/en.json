@@ -29,5 +29,6 @@
   "location error": "Location undefined (error)",
   "name error": "Name undefined (error)",
 
-  "photo of saved location": "Photo of saved location"
+  "photo of saved location": "Photo of saved location",
+  "an error occured": "An error occured"
 }

@@ -47,12 +47,26 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getPosition() async {
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    String pLat = position.latitude.toString();
-    String pLong = position.longitude.toString();
-    _lat = pLat;
-    _long = pLong;
+    try {
+      Position position =
+          await getCurrentPosition(desiredAccuracy: LocationAccuracy.high,timeLimit: Duration(seconds: 10));
+      String pLat = position.latitude.toString();
+      String pLong = position.longitude.toString();
+      _lat = pLat;
+      _long = pLong;
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(translate("an error occured")),
+          Icon(
+            Icons.close,
+            color: Colors.red,
+          ),
+        ],
+      )));
+    }
   }
 
   getPhotoFromSource(ImageSource imageSource) async {
@@ -72,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (await pH.Permission.locationWhenInUse.serviceStatus.isEnabled) {
       if (await pH.Permission.location.request().isGranted) {
         await getPosition();
+
         formKey.currentState.save();
         String lat = _lat ?? translate('location undefined');
         String long = _long ?? translate('location undefined');
@@ -254,7 +269,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _leadingImage(List<Location> locations, int index) {
-
     if (locations[index].photo != null) {
       return Image.memory(
         base64Decode(locations[index].photo),
@@ -386,13 +400,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                           translate("photo of saved location"),
                                           style: TextStyle(color: Colors.blue),
                                         ),
-                                        content: _leadingImage(locations, index),
+                                        content:
+                                            _leadingImage(locations, index),
                                         actions: <Widget>[
                                           FlatButton(
                                             child: Text(
                                               translate("close"),
-                                              style: TextStyle(
-                                                  color: Colors.blue),
+                                              style:
+                                                  TextStyle(color: Colors.blue),
                                             ),
                                             onPressed: () async {
                                               Navigator.of(context).pop();
@@ -428,7 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      isThreeLine: true,
+                      isThreeLine: false,
                     );
                   },
                 );

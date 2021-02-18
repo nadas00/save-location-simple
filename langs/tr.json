@@ -29,5 +29,6 @@
   "location error": "Lokasyon ismi hatası",
   "name error": "Konum hatası",
 
-  "photo of saved location": "Kaydedilen lokasyon fotoğrafı"
+  "photo of saved location": "Kaydedilen lokasyon fotoğrafı",
+  "an error occured": "Bir sorun oluştu"
 }
