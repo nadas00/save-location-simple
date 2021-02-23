@@ -30,5 +30,10 @@
   "name error": "Name undefined (error)",
 
   "photo of saved location": "Photo of saved location",
-  "an error occured": "An error occured"
+  "an error occured": "An error occured",
+
+  "you are about to save your location": "You are about to save your location",
+  "there will be shown an ad before saving location": "There will be shown an ad before saving location",
+  "watch": "Watch",
+  "ad space": "Ad Space"
 }

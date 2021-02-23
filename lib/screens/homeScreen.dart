@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart' as pH;
+import 'package:save_location/services/ad_service.dart';
 import 'package:save_location/services/app_localizations-service.dart';
 import 'package:save_location/db/dao/LocationDao.dart';
 import 'package:save_location/db/database.dart';
@@ -48,14 +49,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   getPosition() async {
     try {
-      Position position =
-          await getCurrentPosition(desiredAccuracy: LocationAccuracy.high,timeLimit: Duration(seconds: 10));
+      Position position = await getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10));
       String pLat = position.latitude.toString();
       String pLong = position.longitude.toString();
       _lat = pLat;
       _long = pLong;
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      Scaffold.of(context).showSnackBar(SnackBar(
           content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -279,6 +281,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    AdService.loadBannerAd();
+    AdService.loadInterstitialAd();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -347,7 +356,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
-                      await savingOperations();
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.white,
+                              title: Text(
+                                translate(
+                                    "you are about to save your location"),
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                              content: Text(translate(
+                                  "there will be shown an ad before saving location")),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text(
+                                    translate("watch"),
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                    AdService.showInterstitialAd();
+                                    await savingOperations();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+
                       setState(() {
                         imageFile = null;
                       });
@@ -375,7 +412,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(
                           locations[index].name ?? translate('name error')),
                       subtitle: Text(
-                          '${locations[index].latitude} ${locations[index].latitude} ' ??
+                          '${locations[index].latitude} ${locations[index].longitude} ' ??
                               translate('location error')),
                       trailing: Container(
                         height: 50,
@@ -450,6 +487,18 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
+          Divider(
+            color: Colors.blueAccent,
+          ),
+          SizedBox(
+            height: 60,
+            child: Center(
+              child: Text(
+                translate("ad space"),
+                style: TextStyle(color: Colors.blueAccent),
+              ),
+            ),
+          )
         ],
       ),
     );

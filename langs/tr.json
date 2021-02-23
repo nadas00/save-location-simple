@@ -15,7 +15,7 @@
   "location permission titleText": "Konum izni gerekiyor!",
   "location permission bodyText": "Bu eylemi gerçekleştirmek için uygulamaya konum izni vermeniz gerekiyor.",
   "location service titleText": "Konum servisi gerekiyor!",
-  "location service bodyText": "Bu eylemi gerçekleştirmek için konum servisini aktif etmeniz gerekitor.",
+  "location service bodyText": "Bu eylemi gerçekleştirmek için konum servisini aktif etmeniz gerekiyor.",
   "close": "Kapat",
   "settings": "Ayarlar",
 
@@ -30,5 +30,11 @@
   "name error": "Konum hatası",
 
   "photo of saved location": "Kaydedilen lokasyon fotoğrafı",
-  "an error occured": "Bir sorun oluştu"
+  "an error occured": "Bir sorun oluştu",
+
+  "you are about to save your location": "Konumunu kaydetmek üzeresin",
+  "there will be shown an ad before saving location": "Devam etmeden önce bir reklam arası",
+  "watch": "İzle",
+  "ad space": "Reklam Alanı"
+
 }
