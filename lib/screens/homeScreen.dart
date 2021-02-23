@@ -377,7 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   onPressed: () async {
                                     Navigator.of(context).pop();
-                                    //AdService.showInterstitialAd();
+                                    AdService.showInterstitialAd();
                                     await savingOperations();
                                     setState(() {
                                       imageFile = null;
