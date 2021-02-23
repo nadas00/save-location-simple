@@ -3,7 +3,7 @@ PODS:
     - Flutter
   - Firebase/CoreOnly (6.33.0):
     - FirebaseCore (= 6.10.3)
-  - firebase_admob (0.10.3):
+  - firebase_admob (0.10.2):
     - Firebase/CoreOnly (~> 6.33.0)
     - firebase_core
     - Flutter
@@ -119,7 +119,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
   Firebase: 8db6f2d1b2c5e2984efba4949a145875a8f65fe5
-  firebase_admob: c3b3b8762181c9748d7e74595044641f0180816b
+  firebase_admob: 4dfb68c1440c0f3ba19ff103f4d78928d5348047
   firebase_core: 5d6a02f3d85acd5f8321c2d6d62877626a670659
   FirebaseCore: d889d9e12535b7f36ac8bfbf1713a0836a3012cd
   FirebaseCoreDiagnostics: 770ac5958e1372ce67959ae4b4f31d8e127c3ac1
@@ -138,6 +138,6 @@ SPEC CHECKSUMS:
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: 71d73795eeb79cba42f38fdde5e893509a63d04d
+PODFILE CHECKSUM: af242ede874f7f73f1076651d1f30f53359b596f
 
 COCOAPODS: 1.10.1

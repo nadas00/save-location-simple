@@ -100,12 +100,12 @@ class _HomeScreenState extends State<HomeScreen> {
         if (imageFile != null) {
           var newLocation = Location(
               latitude: lat, longitude: long, name: name, photo: encodedPhoto);
-          locationDao.insertLocation(newLocation);
+          await locationDao.insertLocation(newLocation);
           formKey.currentState.reset();
         } else {
           var newLocation =
               Location(latitude: lat, longitude: long, name: name);
-          locationDao.insertLocation(newLocation);
+          await locationDao.insertLocation(newLocation);
           formKey.currentState.reset();
         }
       } else {
@@ -377,17 +377,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   onPressed: () async {
                                     Navigator.of(context).pop();
-                                    AdService.showInterstitialAd();
+                                    //AdService.showInterstitialAd();
                                     await savingOperations();
+                                    setState(() {
+                                      imageFile = null;
+                                    });
                                   },
                                 ),
                               ],
                             );
                           });
-
-                      setState(() {
-                        imageFile = null;
-                      });
                     },
                   ),
                 ],
@@ -490,12 +489,15 @@ class _HomeScreenState extends State<HomeScreen> {
           Divider(
             color: Colors.blueAccent,
           ),
-          SizedBox(
-            height: 60,
-            child: Center(
-              child: Text(
-                translate("ad space"),
-                style: TextStyle(color: Colors.blueAccent),
+          SafeArea(
+            top: false,
+            child: SizedBox(
+              height: 60,
+              child: Center(
+                child: Text(
+                  translate("ad space"),
+                  style: TextStyle(color: Colors.blueAccent),
+                ),
               ),
             ),
           )
